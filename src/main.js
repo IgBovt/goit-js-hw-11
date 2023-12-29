@@ -4,7 +4,6 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import 'ldrs/ring';
 
 const KEY = '41531809-f9219a766117007ff116a3463';
 const refs = getRefs();
@@ -12,7 +11,7 @@ refs.form.addEventListener('submit', onSearch);
 
 function onSearch(e) {
   e.preventDefault();
-  refs.form.insertAdjacentHTML('afterend', `<span class="loader"></span>`);
+  refs.span.classList.add('loader');
 
   fetch(
     `https://pixabay.com/api/?key=${KEY}&q=${refs.input.value}&image_type=photo&orientation=horizontal&per_page=21`
@@ -70,8 +69,9 @@ function onSearch(e) {
             >`
         )
         .join('');
-      const loader = document.querySelector('.loader');
-      loader.remove();
+
+      refs.span.classList.remove('loader');
+
       new SimpleLightbox('.gallery a', {
         captionsData: 'alt',
         captionDelay: 250,
