@@ -2,6 +2,9 @@ import { getRefs } from './refs';
 import err from './img/2.svg';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+import 'ldrs/ring';
 
 const KEY = '41531809-f9219a766117007ff116a3463';
 const refs = getRefs();
@@ -9,11 +12,15 @@ refs.form.addEventListener('submit', onSearch);
 
 function onSearch(e) {
   e.preventDefault();
+  refs.form.insertAdjacentHTML('afterend', `<span class="loader"></span>`);
 
   fetch(
     `https://pixabay.com/api/?key=${KEY}&q=${refs.input.value}&image_type=photo&orientation=horizontal&per_page=21`
   )
     .then(response => {
+      if (!response.ok) {
+        throw new Error(response.status);
+      }
       return response.json();
     })
     .then(images => {
@@ -32,9 +39,43 @@ function onSearch(e) {
       refs.body.innerHTML = images.hits
         .map(
           img =>
-            `<a class="link" href="#"><img class="img" src="${img.webformatURL}" alt="${img.tags}" width="360" height="200" loading="lazy"></a>`
+            `
+            <a class="link" href="${img.largeImageURL}">
+            <img
+                class="img"
+                src="${img.webformatURL}"
+                alt="${img.tags}"
+                width="360"
+                height="200"
+                loading="lazy"
+            />
+            <div class="text-bar">
+                <div class="text-container">
+                <h3 class="text-title">Likes</h3>
+                <p class="text">${img.likes}</p>
+                </div>
+                <div class="text-container">
+                <h3 class="text-title">Views</h3>
+                <p class="text">${img.views}</p>
+                </div>
+                <div class="text-container">
+                <h3 class="text-title">Comments</h3>
+                <p class="text">${img.comments}</p>
+                </div>
+                <div class="text-container">
+                <h3 class="text-title">Downloads</h3>
+                <p class="text">${img.downloads}</p>
+                </div>
+            </div> </a
+            >`
         )
         .join('');
+      const loader = document.querySelector('.loader');
+      loader.remove();
+      new SimpleLightbox('.gallery a', {
+        captionsData: 'alt',
+        captionDelay: 250,
+      });
     })
     .catch(error => console.log('error'))
     .finally(refs.form.reset());
