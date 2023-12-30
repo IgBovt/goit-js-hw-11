@@ -1,9 +1,6 @@
 import { getRefs } from './refs';
-import err from './img/2.svg';
-import iziToast from 'izitoast';
-import 'izitoast/dist/css/iziToast.min.css';
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
+import { getAlert } from './alert';
+import { getLargePhoto } from './simpleLightBox';
 
 const KEY = '41531809-f9219a766117007ff116a3463';
 const refs = getRefs();
@@ -28,21 +25,21 @@ function getPhoto() {
     })
     .then(images => {
       if (images.hits.length <= 0) {
-        iziToast.warning({
-          backgroundColor: '#EF4040',
-          titleColor: '#fff',
-          messageColor: '#fff',
-          iconUrl: `${err}`,
-          position: 'topRight',
-          title: 'SORRY',
-          message:
-            'Sorry, there are no images matching your search query. Please try again!',
-        });
+        getAlert();
       }
-      refs.body.innerHTML = images.hits
-        .map(
-          img =>
-            `
+      createMarkup(images);
+      removeLoader();
+      getLargePhoto();
+    })
+    .catch(error => console.log('error'))
+    .finally(refs.form.reset());
+}
+
+function createMarkup(images) {
+  return (refs.body.innerHTML = images.hits
+    .map(
+      img =>
+        `
             <a class="link" href="${img.largeImageURL}">
             <img
                 class="img"
@@ -71,16 +68,10 @@ function getPhoto() {
                 </div>
             </div> </a
             >`
-        )
-        .join('');
+    )
+    .join(''));
+}
 
-      refs.span.classList.remove('loader');
-
-      new SimpleLightbox('.gallery a', {
-        captionsData: 'alt',
-        captionDelay: 250,
-      });
-    })
-    .catch(error => console.log('error'))
-    .finally(refs.form.reset());
+function removeLoader() {
+  return refs.span.classList.remove('loader');
 }
