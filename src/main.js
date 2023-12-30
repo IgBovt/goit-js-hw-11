@@ -1,21 +1,24 @@
 import { getRefs } from './refs';
 import { getAlert } from './alert';
-import { getLargePhoto } from './simpleLightBox';
+import { initializeLightbox } from './simpleLightBox';
 
 const KEY = '41531809-f9219a766117007ff116a3463';
 const refs = getRefs();
+let query = null;
 refs.form.addEventListener('submit', onSearch);
 
 function onSearch(e) {
   e.preventDefault();
   refs.span.classList.add('loader');
-  refs.body.innerHTML = '';
+  refs.container.innerHTML = '';
+  query = e.currentTarget.elements.delay.value.trim();
   getPhoto();
+  e.currentTarget.reset();
 }
 
 function getPhoto() {
   fetch(
-    `https://pixabay.com/api/?key=${KEY}&q=${refs.input.value}&image_type=photo&orientation=horizontal&per_page=21`
+    `https://pixabay.com/api/?key=${KEY}&q=${query}&image_type=photo&orientation=horizontal&per_page=21`
   )
     .then(response => {
       if (!response.ok) {
@@ -29,14 +32,13 @@ function getPhoto() {
       }
       createMarkup(images);
       removeLoader();
-      getLargePhoto();
+      initializeLightbox();
     })
-    .catch(error => console.log('error'))
-    .finally(refs.form.reset());
+    .catch(error => console.log('error'));
 }
 
 function createMarkup(images) {
-  return (refs.body.innerHTML = images.hits
+  return (refs.container.innerHTML = images.hits
     .map(
       img =>
         `

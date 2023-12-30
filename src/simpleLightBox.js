@@ -1,7 +1,7 @@
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-export function getLargePhoto() {
+export function initializeLightbox() {
   new SimpleLightbox('.gallery a', {
     captionsData: 'alt',
     captionDelay: 250,
