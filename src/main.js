@@ -12,9 +12,13 @@ refs.form.addEventListener('submit', onSearch);
 function onSearch(e) {
   e.preventDefault();
   refs.span.classList.add('loader');
+  refs.body.innerHTML = '';
+  getPhoto();
+}
 
+function getPhoto() {
   fetch(
-    `https://pixabay.com/api/?key=${KEY}&q=${refs.input.value}&image_type=photo&orientation=horizontal&per_page=21`
+    `https://pixabay.com/api/?key=${KEY}&q=${refs.input.value}&image_type=photo&orientation=horizontal&per_page=50`
   )
     .then(response => {
       if (!response.ok) {
