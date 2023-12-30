@@ -18,7 +18,7 @@ function onSearch(e) {
 
 function getPhoto() {
   fetch(
-    `https://pixabay.com/api/?key=${KEY}&q=${refs.input.value}&image_type=photo&orientation=horizontal&per_page=50`
+    `https://pixabay.com/api/?key=${KEY}&q=${refs.input.value}&image_type=photo&orientation=horizontal&per_page=21`
   )
     .then(response => {
       if (!response.ok) {
