@@ -4,19 +4,18 @@ import { initializeLightbox } from './simpleLightBox';
 
 const KEY = '41531809-f9219a766117007ff116a3463';
 const refs = getRefs();
-let query = null;
 refs.form.addEventListener('submit', onSearch);
 
 function onSearch(e) {
   e.preventDefault();
   refs.span.classList.add('loader');
   refs.container.innerHTML = '';
-  query = e.currentTarget.elements.delay.value.trim();
-  getPhoto();
+  const query = e.currentTarget.elements.delay.value.trim();
+  getPhoto(query);
   e.currentTarget.reset();
 }
 
-function getPhoto() {
+function getPhoto(query) {
   fetch(
     `https://pixabay.com/api/?key=${KEY}&q=${query}&image_type=photo&orientation=horizontal&per_page=21`
   )
